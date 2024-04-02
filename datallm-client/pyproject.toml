@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "datallm"
+version = "0.2.3"
+description = "Python client for DataLLM server"
+authors = ["MOSTLY AI <office@mostly.ai>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [
+    { include = "datallm" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pydantic = "^2.4.2"
+httpx = "^0.25.1"
+pandas = ">=1.5.3,<2.0.0 || ^2.0.0"
+pyarrow = "^14.0.2"
+rich = "^13.7.0"
+tenacity = "^8.2.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+ruff = "^0.1.14"
+twine = "^5.0.0"
+
+[tool.ruff]
+# Enable the isort rules.
+extend-select = ["I"]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

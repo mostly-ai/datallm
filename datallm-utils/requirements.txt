@@ -1,0 +1,12 @@
+kaggle
+openai
+bitsandbytes
+transformers
+peft
+accelerate
+datasets
+scipy
+pandas
+numpy
+trl
+torch
