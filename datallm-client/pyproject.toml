@@ -22,10 +22,16 @@ tenacity = "^8.2.3"
 pytest = "^7.4.4"
 ruff = "^0.1.14"
 twine = "^5.0.0"
+poetry-bumpversion = "^0.3.2"
 
 [tool.ruff]
 # Enable the isort rules.
 extend-select = ["I"]
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["datallm/__init__.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
 
 
 [build-system]
