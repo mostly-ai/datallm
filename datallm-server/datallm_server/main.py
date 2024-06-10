@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import traceback
 from typing import List
 
 from urllib.request import Request
@@ -28,7 +29,8 @@ app = FastAPI()
 INTERNAL_PATHS = ["/health"]
 AVAILABLE_MODELS = [
     "mostlyai/datallm-v2-mistral-7b-v0.1",
-    "mostlyai/datallm-v2-mixtral-8x7b-v0.1"
+    "mostlyai/datallm-v2-mixtral-8x7b-v0.1",
+    "mostlyai/datallm-v2-meta-llama-3-8b",
 ]
 MAX_BATCH_SIZE = 100
 ENGINE_API_SERVER_URL = None  # If None assume Modal engine is used
@@ -75,6 +77,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        raise e
 
 
 @app.middleware("http")

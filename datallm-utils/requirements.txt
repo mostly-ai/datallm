@@ -6,7 +6,7 @@ peft
 accelerate
 datasets
 scipy
-pandas
+pandas==2.2.1
 numpy
 trl
 torch

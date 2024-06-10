@@ -32,7 +32,7 @@ else:
 
 
 class BaseEngine:
-    def __init__(self, model_dir, model_name: str, tensor_parallel_size: int = 1):
+    def __init__(self, model_dir, model_name: str, tensor_parallel_size: int = 1, environment='main'):
         from vllm.engine.arg_utils import AsyncEngineArgs
         from vllm.engine.async_llm_engine import AsyncLLMEngine
 
@@ -58,6 +58,7 @@ class BaseEngine:
             tensor_parallel_size=tensor_parallel_size,
             gpu_memory_utilization=0.90,
             enforce_eager=False,
+            disable_log_requests=False if environment == 'dev' else True,
         )
 
         self.engine = AsyncLLMEngine.from_engine_args(engine_args)
@@ -76,7 +77,7 @@ class BaseEngine:
         prompts: list[str],
         id: str | None = None,
         regex: str | None = None,
-        max_tokens: int = 64,
+        max_tokens: int | None = 64,
         temperature: float = 0.7,
         top_p: float = 1.0,
         cut_window_after: str | None = None,
@@ -93,7 +94,6 @@ class BaseEngine:
             top_p: The top_p to use for sampling.
             cut_window_after: A string to cut the prompt after to avoid exceeding the maximum model length.
         """
-
         logits_processors = []
         if regex:
             parser = RegexParser(regex)
@@ -111,7 +111,7 @@ class BaseEngine:
 
         t0 = time.time()
 
-        def cut_window_if_too_long(prompt_ids):
+        def cut_window_if_too_long(prompt_ids: list[int]):
             if len(prompt_ids) <= self.max_model_len - max_tokens:
                 return prompt_ids
             if cut_window_after:
