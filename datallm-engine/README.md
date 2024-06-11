@@ -16,7 +16,7 @@ There are two ways to deploy the engine, either as a REST API or as a [Modal ser
    ```shell
    modal deploy datallm_engine/entrypoints/modal/serve.py
    ```
-   Change `GPU_CONFIG` to alter the GPU used for deployment.
+   Change `GPU_CONFIG` to alter the GPU used for deployment. If you have several Modal environments (e.g. `dev` and `main`) you will need to specify which environment to deploy to `--environment dev`.
 
 ### Alternative 2: REST API
 

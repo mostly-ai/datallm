@@ -33,7 +33,8 @@ vllm_image = (
     .env({"HF_HUB_ENABLE_HF_TRANSFER": "1"})
     .run_function(
         download_model,
-        secrets=[Secret.from_name("my-huggingface-secret")],
+        secrets=[Secret.from_name("my-huggingface-secret", environment_name="main")],
         timeout=60 * 30,
+        # force_build=True
     )
 )

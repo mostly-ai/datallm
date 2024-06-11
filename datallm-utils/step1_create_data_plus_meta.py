@@ -86,8 +86,8 @@ def summarize_feature_stats(data: pd.DataFrame) -> Dict:
         values = data[col].dropna()
         uvalues = list(values.unique())
         uvalues = [str(v).replace("\xa0", " ") for v in uvalues]
-        # consider as categorical if less than 8 unique values
-        if len(uvalues) > 1 and len(uvalues) < 8:
+        # consider as categorical if not a constant and strictly less than 8 unique values
+        if 1 < len(uvalues) < 8:
             features[col] = {
                 "type": "category",
                 "properties": {"categories": list(values.astype("str").unique())},
@@ -118,9 +118,10 @@ def summarize_feature_stats(data: pd.DataFrame) -> Dict:
                 dt_format = guess_datetime_format(values.iloc[0])
                 if dt_format is None:
                     raise ValueError
+                date_type = "datetime" if '%H' in dt_format else "date"
                 dt_values = pd.to_datetime(values, format=dt_format, errors="raise")
                 features[col] = {
-                    "type": "datetime",
+                    "type": date_type,
                     "properties": {
                         "min": dt_values.min().isoformat(),
                         "max": dt_values.max().isoformat(),
@@ -128,7 +129,7 @@ def summarize_feature_stats(data: pd.DataFrame) -> Dict:
                     },
                 }
             except:
-                if len(uvalues) > 1 and len(uvalues) < 50 and max([len(c) for c in uvalues]) < 30:
+                if 1 < len(uvalues) < 50 and max(len(c) for c in uvalues) < 30:
                     features[col] = {
                         "type": "category",
                         "properties": {"categories": uvalues},

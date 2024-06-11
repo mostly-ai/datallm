@@ -17,18 +17,22 @@ print(f"exporting to {output_path}")
 def create_instructions(data: pd.DataFrame, metadata: dict) -> pd.DataFrame:
     # convert date columns to ISO format
     dt_cols = [
-        c for c, m in metadata["features"].items() if m.get("type") == "datetime"
+        c for c, m in metadata["features"].items() if m.get("type") in ("date", "datetime")
     ]
     for col in dt_cols:
+        feature_meta = metadata["features"][col]
+        dtype = feature_meta["type"]
+        output_format = "%Y-%m-%d %H:%M:%S" if dtype == 'datetime' else "%Y-%m-%d"
         data[col] = pd.to_datetime(
-            data[col], format=metadata["features"][col]["properties"]["format"]
-        ).dt.strftime("%Y-%m-%d %H:%M:%S")
+            data[col], format=feature_meta["properties"]["format"]
+        ).dt.strftime(output_format)
+
     instructs = []
     for idx in range(data.shape[0]):
         # randomly pick a target column ('response')
         target = random.choice(list(data.columns))
         response = data.loc[idx][target]
-        if response is None or response == "":
+        if response == "" or pd.isnull(response):
             # skip empty responses as users always expect an answer
             continue
         # the rest columns are candidates to be used as input ('features')

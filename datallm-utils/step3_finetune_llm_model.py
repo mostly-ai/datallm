@@ -61,6 +61,8 @@ def create_prompt(sample: dict):
         task = "Sample a float number with decimal digits."
     elif dtype == "datetime":
         task = "Sample a datetime in format YYYY-MM-DD HH:MM:SS."
+    elif dtype == "date":
+        task = "Sample a date in format YYYY-MM-DD."
     else:
         task = "Sample a string."
 
