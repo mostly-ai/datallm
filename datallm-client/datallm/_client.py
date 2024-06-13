@@ -202,14 +202,8 @@ class DataLLM(SyncClient):
             columns = {col: {} for col in columns}
         col_names = list(columns.keys())
         for col, params in columns.items():
-            # we set the column names temporarily to the prompt, to pass this context on to subsequent
-            # columns; but we need to ensure that these temporary column names are unique
-            if "prompt" in params and params["prompt"] not in df:
-                tmp_col = params["prompt"]
-            elif "prompt" in params and params["prompt"] in df:
-                tmp_col = f"{params['prompt']} "
-            else:
-                tmp_col = col
+            # we temporarily include the prompt to the column name to pass this context on to subsequent cols
+            tmp_col = f"{col} ({params['prompt']})" if "prompt" in params else col
             df[tmp_col] = self.enrich(
                 data=df,
                 prompt=params.get("prompt", col),
