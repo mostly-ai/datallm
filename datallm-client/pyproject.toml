@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "datallm"
-version = "0.2.4"
+version = "0.2.5"
 description = "Python client for DataLLM server"
 authors = ["MOSTLY AI <office@mostly.ai>"]
 license = "Apache-2.0"
