@@ -202,7 +202,7 @@ class DataLLM(SyncClient):
             columns = {col: {} for col in columns}
         col_names = list(columns.keys())
         for col, params in columns.items():
-            df[params.get("prompt", col)] = self.enrich(
+            df[col] = self.enrich(
                 data=df,
                 prompt=params.get("prompt", col),
                 model=model,
