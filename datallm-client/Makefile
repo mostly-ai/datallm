@@ -2,9 +2,9 @@
 BUMP_TYPE ?= patch
 
 # Targets for Release Workflow/Automation
-.PHONY: release bump-version update-version create-branch commit-tag changelog push-changes update-main re-tag build confirm-upload upload clean-dist delete-branch
+.PHONY: release bump-version update-version create-branch commit-tag push-changes update-dev re-tag build confirm-upload upload clean-dist delete-branch
 
-release: bump-version update-version create-branch commit-tag changelog push-changes update-main re-tag build upload clean-dist delete-branch
+release: bump-version update-version create-branch commit-tag push-changes update-dev re-tag build upload clean-dist delete-branch
 
 bump-version: ## Bump version (default: patch, options: patch, minor, major)
 	@poetry version $(BUMP_TYPE)
@@ -28,24 +28,18 @@ commit-tag: ## Commit version bump, so that it's visible to commitizen
 	@git tag $(TAG)
 	@echo "Tag $(TAG) created"
 
-changelog: ## Update CHANGELOG.md and commit
-	@cz ch --incremental
-	@git add CHANGELOG.md
-	@git commit -m "bump(changelog): update to $(VERSION)"
-	@echo "Changelog updated"
-
 push-changes: ## Push to version bump branch
 	@git push origin $(BRANCH)
 	@echo "Pushed changes to $(BRANCH) branch"
 	
-update-main: ## Merge the current branch into main and push changes to origin
-	@git checkout main
+update-dev: ## Merge the current branch into dev and push changes to origin
+	@git checkout dev
 	@git merge --squash $(BRANCH)
 	@git commit -m "bump: to $(VERSION)"
-	@git push origin main
-	@echo "Merged $(BRANCH) into main and pushed changes"
+	@git push origin dev
+	@echo "Merged $(BRANCH) into dev and pushed changes"
 
-re-tag:  ## Correct the new version tag on main
+re-tag:  ## Correct the new version tag on dev
 	@git tag -d $(TAG)
 	@git tag $(TAG)
 	@git push origin $(TAG)
