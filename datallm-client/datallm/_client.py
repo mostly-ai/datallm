@@ -202,7 +202,14 @@ class DataLLM(SyncClient):
             columns = {col: {} for col in columns}
         col_names = list(columns.keys())
         for col, params in columns.items():
-            df[col] = self.enrich(
+            # we set the column names temporarily to the prompt, to pass this context on to subsequence columns
+            if "prompt" in params and params["prompt"] not in df:
+                tmp_col = params["prompt"]
+            elif "prompt" in params and params["prompt"] in df:
+                tmp_col = f"{params['prompt']} "
+            else:
+                tmp_col = col
+            df[tmp_col] = self.enrich(
                 data=df,
                 prompt=params.get("prompt", col),
                 model=model,
@@ -215,5 +222,6 @@ class DataLLM(SyncClient):
                 top_p=params.get("top_p", top_p),
                 progress_bar=progress_bar,
             )
+        # set column names to the provided keys
         df.columns = col_names
         return df
