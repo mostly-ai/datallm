@@ -2,9 +2,9 @@
 BUMP_TYPE ?= patch
 
 # Targets for Release Workflow/Automation
-.PHONY: release bump-version update-version create-branch commit-tag push-changes update-dev re-tag build confirm-upload upload clean-dist delete-branch
+.PHONY: release bump-version update-version create-branch commit-tag changelog push-changes update-dev re-tag build confirm-upload upload clean-dist delete-branch
 
-release: bump-version update-version create-branch commit-tag push-changes update-dev re-tag build upload clean-dist delete-branch
+release: bump-version update-version create-branch commit-tag changelog push-changes update-dev re-tag build upload clean-dist delete-branch
 
 bump-version: ## Bump version (default: patch, options: patch, minor, major)
 	@poetry version $(BUMP_TYPE)
@@ -27,6 +27,12 @@ commit-tag: ## Commit version bump, so that it's visible to commitizen
 	@git commit -m "bump: to $(VERSION)"
 	@git tag $(TAG)
 	@echo "Tag $(TAG) created"
+	
+changelog: ## Update CHANGELOG.md and commit
+	@cz ch --incremental
+	@git add CHANGELOG.md
+	@git commit -m "bump(changelog): update to $(VERSION)"
+	@echo "Changelog updated"
 
 push-changes: ## Push to version bump branch
 	@git push origin $(BRANCH)

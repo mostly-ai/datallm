@@ -23,6 +23,7 @@ pytest = "^7.4.4"
 ruff = "^0.1.14"
 twine = "^5.0.0"
 poetry-bumpversion = "^0.3.2"
+commitizen = "^3.27.0"
 
 [tool.ruff]
 # Enable the isort rules.
